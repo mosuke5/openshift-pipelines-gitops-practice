@@ -1,8 +1,8 @@
 # ハンズオン
 ## 0. 確認した環境
-- OpenShift: 4.8
-- OpenShift Piplines:
-- OpenShift GitOps:
+- OpenShift: 4.8
+- OpenShift Piplines: 1.5
+- OpenShift GitOps: 1.2
 
 ## 1. アプリケーションを理解とOpenShiftの基本操作
 本アプリケーションは、Python flask+MySQLで動作するAPIサーバです。
@@ -18,12 +18,12 @@ OpenShiftの基本操作について問題ない人はアプリケーション�
         - データベースへの接続ID/PWは、Secretオブジェクトに切り出し環境変数としてアプリケーションに渡しましょう。
         - データベースのデータ領域にはPVをマウントしましょう。また、データベースの起動にはStatefulSetを利用てみましょう。※利用できるPVが用意できない場合は、emptyDirで代用を検討してください。
         - （オプション）OpenShiftテンプレートやKustomizeなどテンプレートエンジンを利用しましょう。
-		- (オプション) アプリケーションの前段にWebサーバ（NginxやApache httpdなど）を配置してみましょう。Webサーバを配置するモチベーションとしては、静的コンテンツのキャッシュやIP制限、Basic認証などを設定すると仮定してください。その際、Webサーバの設定ファイルはConfigMapで管理してみましょう。
+    - （オプション）アプリケーションの前段にWebサーバ（NginxやApache httpdなど）を配置してみましょう。Webサーバを配置するモチベーションとしては、静的コンテンツのキャッシュやIP制限、Basic認証などを設定すると仮定してください。その際、Webサーバの設定ファイルはConfigMapで管理してみましょう。
 1. オペレーション
-		- アプリケーションにアクセスし、oc logsを用いてログを確認してみましょう。
-		- アプリケーションに対して、ReadinessProbeとLivenessProbeを設定しましょう。その際、ReadinessProbeとLivenessProbeの違いを明確にしておきましょう。
-		- アプリケーションのレプリカ数を変更し（2以上に設定し）、負荷分散が行われる状況を確認しましょう。
-		- アプリケーションの一部を変更し、手動で更新したアプリケーションをデプロイし、その変更を確認してみましょう。
+    - アプリケーションにアクセスし、oc logsを用いてログを確認してみましょう。
+    - アプリケーションに対して、ReadinessProbeとLivenessProbeを設定しましょう。その際、ReadinessProbeとLivenessProbeの違いを明確にしておきましょう。
+    - アプリケーションのレプリカ数を変更し（2以上に設定し）、負荷分散が行われる状況を確認しましょう。
+    - アプリケーションの一部を変更し、手動で更新したアプリケーションをデプロイし、その変更を確認してみましょう。
 
 ## 2. Tetkonの基礎
 ### 2-1. Taskを動かす
@@ -325,8 +325,8 @@ Pod間では、ストレージを利用しない限りデータの共有はで�
 
 次の演習で実際に利用してみます。
 
-## 3. 課題アプリへの適用
-自己学習課題で利用したIsuumo pythonアプリに、ビルドパイプラインとArgoCDを用いたデプロイ処理を加えてみましょう。  
+## 3. アプリケーションへの適用
+本レポジトリのIsuumo pythonアプリに、ビルドパイプラインとArgoCDを用いたデプロイ処理を加えてみましょう。  
 今回のハンズオンで実施する全体像は以下です。
 
 <img width="1063" alt="スクリーンショット 2021-08-22 17 46 39" src="https://user-images.githubusercontent.com/733334/130348499-88ef2f1e-21bf-4769-96f2-bb143f408a5d.png">
@@ -512,7 +512,7 @@ Argo CDへアクセスし、[Argo CDハンズオンの内容](https://github.com
 Argo CDの設定例。
 
 - SOURCE
-    - Repository URL: フォークしたみなさんのGithubレポジトリ
+    - Repository URL: フォークしたみなさんのGitHubレポジトリ
     - Revision: `main`か`staging`を選択
     - Path: Revision=`main`の場合は`production`を、 Revision=`staging`の場合は`staging`を選択。このPathは、レポジトリ内のどのPathを利用するか。Kustomizeで環境ごとにパラメータを変更してデプロイすることを想定しています。
 - DESTINATION
@@ -531,7 +531,7 @@ Tekton Pipelinesを用いたパイプラインの作成方法について説明�
 | エンティティ | 説明 |
 ----|---- 
 | Trigger Templates | PipelineRunを生成するためのテンプレート。PipelineRunを生成するために必要なパラメータの定義でき、パラメータを引き渡してPipelineRunを生成できる。 |
-| Trigger Bindings | EventListenersが受け取ったデータ（例えば、Webhookのペイロード）と、TriggerTemplatesに引き渡すパラメータの紐付け定義。 |
+| Trigger Bindings | EventListenersが受け取ったデータ（たとえば、Webhookのペイロード）と、TriggerTemplatesに引き渡すパラメータの紐付け定義。 |
 | ClusterTrigger Binding | すべてのNamespace/Projectで共有できるTriggerBindings。GitHubやGitlabといったメジャーなGitレポジトリからのイベントなどの汎用的なTriggerBindingsを管理。 |
 | EventListener | Listener Podを生成してイベント（httpリクエスト）を待ち受ける。リクエストを受け付けるとTriggerBindings, TriggerTemplatesの設定を参照して、PipelineRunを生成する（パイプラインを実行する）。EventListenerには、オプションで追加できるInterceptorと呼ばれる機能を備える。GitHubやGitlabといったメジャーなGitレポジトリからのWebhookのバリデーションやフィルタリングができる。 |
 
@@ -577,9 +577,8 @@ spec:
 
 ![スクリーンショット 2021-08-22 22 10 00](https://user-images.githubusercontent.com/733334/130356481-07fdcbb9-a175-44a4-9636-2b6140364b4e.png)
 
-Webhookによるトリガーを実現するためには、EventListenerを作成する必要があります。　　
+Webhookによるトリガーを実現するためには、EventListenerを作成する必要があります。  
 EventListenerの作成に先立ち、2つの準備が必要です。1つ目が、EventListenerが利用するService Accountの準備とその権限付与です。EventListenerの実態はPodです。イベントを受け付けたEventListenerが、PipelineRunを作成するため、EventListenerに対してKubernetesリソースを操作できる権限が必要になります。2つ目が、GitHub interceptorが認証に利用するシークレットです。Webhookイベントを送信するあらゆるリクエストに対してパイプラインを実行するのはセキュリティ面で危険であり、EventListenerにて認証を行います。
-
 
 GitHub interceptorが利用するシークレットを作成します。シークレットのキーは任意のものに差し替えて利用してください。
 
@@ -587,7 +586,7 @@ GitHub interceptorが利用するシークレットを作成します。シー�
 $ oc project userX-staging
 
 # EventListenerが利用するシークレットの作成
-$ oc create secret generic github-webhook --from-literal=secretkey=openshift-tettei-nyumon
+$ oc create secret generic github-webhook --from-literal=secretkey=openshift-handson
 secret/github-webhook created
 ```
 
@@ -644,7 +643,7 @@ kind: EventListener
 metadata:
   name: build-pipeline
 spec:
-  # 前手順で作成したService Accountの指定
+  # OpenShift Pipelinesによって作成されるSA
   serviceAccountName: pipeline
   triggers:
     - bindings:
@@ -697,6 +696,6 @@ EventListenerの起動とその外部公開が完了したら、GitHubへのWebh
 ##### GitHubへのWebhook設定内容
 - Payload URL: EventListenerのRouteのホストを設定
 - Content type: “application/json”を選択
-- Secret: 前手順で作成したgithub-webhookシークレットの値
+- Secret: 前手順で作成した`github-webhook`シークレットの値
 - Which events would you like to trigger this webhook?: “Just the push event.”を選択
 - Active: チェックをつけて有効化
