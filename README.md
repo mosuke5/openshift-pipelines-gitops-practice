@@ -111,4 +111,4 @@ $ curl http://localhost:5000/api/chair/2 | jq .
 ```
 
 ## CI/CDパイプラインの追加
-[handson.md](handson.md)を参照。
+[handson.md](docs/handson.md)を参照。
