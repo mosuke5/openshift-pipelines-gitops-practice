@@ -7,7 +7,7 @@ export JOB_DB_HOST=${DB_HOST:-127.0.0.1}
 export JOB_DB_PORT=${DB_PORT:-3306}
 export JOB_DB_USER=${DB_USER:-isucon}
 export JOB_DB_DBNAME=${DB_DBNAME:-isuumo}
-export JOB_DB_PWD=${DB_PASS:-isucon}
+export MYSQL_PWD=${DB_PASS:-isucon}  # MYSQL規定の環境変数名
 export LANG="C.UTF-8"
 cd $CURRENT_DIR
 
