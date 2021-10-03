@@ -4,7 +4,19 @@
 - OpenShift Piplines: 1.5
 - OpenShift GitOps: 1.2
 
-## 1. アプリケーションを理解とOpenShiftの基本操作
+## 1. Argo CDの基礎
+Kubernetesを活用したアプリケーションデプロイを学ぶためにArgo CDを利用して、GitOpsの概念を理解します。
+次のレポジトリの「ハンズオン１」を完了させましょう。
+ハンズオンで利用するArgo CDについては、ハンズオン主催者が事前に作成済みです。
+
+[Argo CD基礎ハンズオン](https://github.com/mamoru1112/openshift-gitops-handson)
+
+## 2. Tetkonの基礎
+Kubernetes環境で用いられるクラウドネイティブなCIツールであるTektonの基礎概念を理解します。次のハンズオンを完了させましょう。
+
+[Tekton基礎ハンズオン](/docs/tekton.md)
+
+## 3. アプリケーションを理解とOpenShiftの基本操作
 本アプリケーションは、Python flask+MySQLで動作するAPIサーバです。
 まずは、アプリケーションを[README.md](README.md)にしたがって動かしてみましょう。
 OpenShiftの基本操作について問題ない人はアプリケーションの動かし方だけ把握するでも構いません。
@@ -24,18 +36,6 @@ OpenShiftの基本操作について問題ない人はアプリケーション�
     - アプリケーションに対して、ReadinessProbeとLivenessProbeを設定しましょう。その際、ReadinessProbeとLivenessProbeの違いを明確にしておきましょう。
     - アプリケーションのレプリカ数を変更し（2以上に設定し）、負荷分散が行われる状況を確認しましょう。
     - アプリケーションの一部を変更し、手動で更新したアプリケーションをデプロイし、その変更を確認してみましょう。
-
-## 2. Argo CDの基礎
-Kubernetesを活用したアプリケーションデプロイを学ぶためにArgo CDを利用して、GitOpsの概念を理解します。
-次のレポジトリの「ハンズオン１」を完了させましょう。
-ハンズオンで利用するArgo CDについては、ハンズオン主催者が事前に作成済みです。
-
-[Argo CD基礎ハンズオン](https://github.com/mamoru1112/openshift-gitops-handson)
-
-## 3. Tetkonの基礎
-Kubernetes環境で用いられるクラウドネイティブなCIツールであるTektonの基礎概念を理解します。次のハンズオンを完了させましょう。
-
-[Tekton基礎ハンズオン](/docs/tekton.md)
 
 ## 4. アプリケーションへの適用
 本レポジトリのIsuumo pythonアプリに、ビルドパイプラインとArgoCDを用いたデプロイ処理を加えてみましょう。  
