@@ -217,7 +217,6 @@ Argo CDへアクセスし、[Argo CDハンズオンの内容](https://github.com
     - デプロイ先は、事前準備で作成した２つのnamespaceにデプロイできるようにしてみましょう。`main`ブランチの変更は `userX-production`へ、`staging`ブランチの変更は `userX-staging`へデプロイしましょう。
     - 詳細設定方法は後述します。
 3. Production用とStaging用、両方のAPPLICATIONをデプロイしてみましょう
-    - その際、リソースの出来上がる順番に注目してみましょう
 4. その後、Staging用ブランチになんらかの変更を加え反映してみましょう。
 5. 4.が問題なければ、Stagingブランチの変更をmainブランチにマージ（プルリクエストの発行とマージ）し、Production用に反映してみましょう
 
@@ -234,6 +233,12 @@ Argo CDの設定例。
     - IMAGES:
     -  `image-registry.openshift-image-registry.svc:5000/<namespace name>/<image name>`は、皆さんの環境に合わせて書き換えてください。CIパイプラインでビルドしたイメージのパスです。わからない場合は、Webコンソールのサイドバーの「ビルド」 > 「イメージストリームタグ」から確認しましょう。
     -  `image-registry.openshift-image-registry.svc:5000/openshift/mysql`は、MySQLのイメージのため特に書き換えなくても大丈夫です。
+
+
+実施すること
+- `userX-staging`にアプリケーションをデプロイできること
+- `userX-production`にアプリケーションをデプロイできること
+- `userX-staging`のみに変更を適用できること。そして、動作確認後、`userX-production`に変更を適用できること。
 
 ### 4-6. Webhookの設定
 #### Tekton Triggers
