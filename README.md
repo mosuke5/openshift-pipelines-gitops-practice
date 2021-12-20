@@ -7,7 +7,7 @@
 
 - Python: 3.8, 3.9
 - MySQL: 8
-- OpenShift: 4.7, 4.8
+- OpenShift: 4.7, 4.8, 4.9
 
 ## ローカルでの動かし方
 ```
