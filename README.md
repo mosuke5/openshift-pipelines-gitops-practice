@@ -1,4 +1,4 @@
-# Migration practice for python flask app!!
+# Migration practice for python flask app!!!!
 このレポジトリは、FlaskとMySQLで動作するAPIサービスのサンプルです。
 アプリケーションは、ISUCON10の予選で利用されたものとなります。
 本アプリケーションを、課題に沿ってOpenShiftクラスタで動作させる練習を行いましょう。
