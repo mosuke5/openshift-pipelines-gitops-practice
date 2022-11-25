@@ -38,6 +38,12 @@ mysql> show databases;
 +--------------------+
 2 rows in set (0.01 sec)
 
+mysql> use isuumo
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+
 mysql> show tables;
 +------------------+
 | Tables_in_isuumo |

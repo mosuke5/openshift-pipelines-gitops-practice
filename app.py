@@ -61,7 +61,7 @@ def post_initialize():
 @app.route("/healthcheck", methods=["GET"])
 def healthcheck():
     rows = select_all("SELECT * FROM estate LIMIT 1")
-    return {"healck": "ok!!"}
+    return {"healthcheck": "ok"}
 
 @app.route("/api/estate/low_priced", methods=["GET"])
 def get_estate_low_priced():
