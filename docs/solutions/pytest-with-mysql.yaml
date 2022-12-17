@@ -1,0 +1,88 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: pytest-with-mysql
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/categories: Testing
+    tekton.dev/pipelines.minVersion: "0.12.1"
+    tekton.dev/tags: python, pytest-with-mysql
+    tekton.dev/displayName: pytest-with-mysql
+    tekton.dev/platforms: "linux/amd64,linux/s390x,linux/ppc64le"
+spec:
+  description: >-
+    This task will run pytest on the provided input.
+
+  workspaces:
+    - name: source
+  params:
+    - name: PYTHON
+      description: The used Python version, more precisely the tag for the Python image
+      type: string
+      default: "latest"
+    - name: ARGS
+      description: The additional arguments to be used with pytest
+      type: string
+      default: ""
+    - name: SOURCE_PATH
+      description: The path to the source code
+      default: "."
+    - name: REQUIREMENTS_FILE
+      description: The name of the requirements file inside the source location, with fallback to the requirements file in the root location
+      default: "requirements.txt"
+    - name: MYSQL_IMAGE
+      type: string
+      default: "image-registry.openshift-image-registry.svc:5000/openshift/mysql:8.0-el8"
+    - name: MYSQL_DATABSE
+      type: string
+      default: "isuumo"
+    - name: MYSQL_USER
+      type: string
+      default: "isucon"
+    - name: MYSQL_PASSWORD
+      type: string
+      default: "isucon"
+  steps:
+    - name: initialize-data
+      image: $(inputs.params.MYSQL_IMAGE)
+      workingDir: $(workspaces.source.path)
+      script: |
+        ## wait for starting mysql
+        timeout 100 bash -c 'until printf "" 2>>/dev/null >>/dev/tcp/$0/$1; do sleep 1; done' localhost 3306
+        /bin/bash db/init.sh
+    - name: unit-test
+      image: docker.io/python:$(inputs.params.PYTHON)
+      workingDir: $(workspaces.source.path)
+      script: |
+        export PATH=$PATH:$HOME/.local/bin
+
+        if [ -e "$(inputs.params.SOURCE_PATH)"/"$(inputs.params.REQUIREMENTS_FILE)" ];
+        then
+          pip install -r "$(inputs.params.SOURCE_PATH)"/"$(inputs.params.REQUIREMENTS_FILE)"
+          pip show pytest || {
+            printf "###\nWarning: Pytest is missing in your test requirements file\n###";
+            pip install pytest
+          }
+        else
+          if [ -e "$(inputs.params.REQUIREMENTS_FILE)" ];
+          then
+            pip install -r "$(inputs.params.REQUIREMENTS_FILE)"
+          fi
+          pip install pytest
+        fi
+        if [ -z "$(inputs.params.ARGS)" ]; then
+          pytest "$(inputs.params.SOURCE_PATH)"
+        else
+          pytest $(inputs.params.ARGS) "$(inputs.params.SOURCE_PATH)"
+        fi
+  sidecars:
+    - image: $(inputs.params.MYSQL_IMAGE)
+      name: mysql
+      env:
+        - name: MYSQL_DATABASE
+          value: $(inputs.params.MYSQL_DATABASE)
+        - name: MYSQL_USER
+          value: $(inputs.params.MYSQL_USER)
+        - name: MYSQL_PASSWORD
+          value: $(inputs.params.MYSQL_PASSWORD)
