@@ -1,12 +1,17 @@
 ## ハンズオン管理者向け事前準備
-ハンズオン管理者で事前にSonarqubeを起動しておくといいでしょう。
+ハンズオン管理者で事前にSonarqubeを起動しておきます。 `handson-devops` プロジェクト内にSonarqubeが起動していることを前提に以下すすめます。
 
 ```
 $ oc new-project handson-devops
+$ oc create sa postgresql
+$ oc adm policy add-scc-to-user anyuid -z postgresql
+
 $ helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
 $ helm repo update
 $ helm upgrade --install -f docs/solutions/sonarqube.yaml -n handson-devops sonarqube sonarqube/sonarqube
 ```
+
+default: admin/admin
 
 ## ユニットテストの追加
 ユニットテストをパイプラインに追加します。  

@@ -34,7 +34,7 @@ spec:
     - name: MYSQL_IMAGE
       type: string
       default: "image-registry.openshift-image-registry.svc:5000/openshift/mysql:8.0-el8"
-    - name: MYSQL_DATABSE
+    - name: MYSQL_DATABASE
       type: string
       default: "isuumo"
     - name: MYSQL_USER

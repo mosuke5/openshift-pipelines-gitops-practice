@@ -1,7 +1,6 @@
 # Default values for sonarqube. openebs-hostpath
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
 # If the deployment Type is set to Deployment sonarqube is deployed as a replica set.
 deploymentType: "StatefulSet"
 
@@ -473,7 +472,7 @@ tests:
 
 # For OpenShift set create=true to ensure service account is created.
 serviceAccount:
-  create: false
+  create: true
   name: sonarqube
   # automountToken: false # default
   ## Annotations for the Service Account

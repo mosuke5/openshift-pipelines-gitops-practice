@@ -4,12 +4,6 @@
 - OpenShift Piplines: 1.8
 - OpenShift GitOps: 1.6
 
-```
-oc adm groups new handson-user
-oc adm groups add-users handson-user user0 user1 user2 user3 user4 user5 user6 user7 user8 user9 user10
-group.user.openshift.io/handson-user added: ["user0" "user1" "user2" "user3" "user4" "user5" "user6" "user7" "user8" "user9" "user10"]
-```
-
 ## 1. Argo CDの基礎
 Kubernetesを活用したアプリケーションデプロイを学ぶためにArgo CDを利用して、GitOpsの概念を理解します。
 次のレポジトリの「ハンズオン１」を完了させましょう。
@@ -86,6 +80,7 @@ spec:
       default: "main"
     - name: image
       type: string
+      default: "image-registry.openshift-image-registry.svc:5000/<ns>/<image name>"
     - name: image-tag
       type: string
       default: "latest"
@@ -127,61 +122,12 @@ spec:
 <details>
 <summary>ビルドパイプラインのソリューション</summary>
 <div>
-    
-```yaml
-apiVersion: tekton.dev/v1beta1
-kind: Pipeline
-metadata:
-  name: build-pipeline
-spec:
-  workspaces: 
-    - name: shared-workspace
-  params:
-    - name: git-url
-      type: string
-    - name: git-revision
-      type: string
-      default: "main"
-    - name: image
-      type: string
-    - name: image-tag
-      type: string
-      default: "latest"
-    - name: context
-      type: string
-      default: "."
-  tasks:
-    - name: fetch-repository
-      taskRef:
-        name: git-clone
-        kind: ClusterTask
-      workspaces:
-        - name: output
-          workspace: shared-workspace
-      params:
-        - name: url
-          value: $(params.git-url)
-        - name: deleteExisting
-          value: "true"
-        - name: revision
-          value: $(params.git-revision)
-    - name: build-push-image
-      taskRef:
-        name: buildah
-        kind: ClusterTask
-      params:
-        - name: IMAGE
-          value: $(params.image):$(params.image-tag)
-        - name: DOCKERFILE
-          value: "Dockerfile"
-        - name: CONTEXT
-          value: "$(workspaces.source.path)/$(params.context)"
-      workspaces:
-        - name: source
-          workspace: shared-workspace
-      runAfter:
-        - fetch-repository
-```
+
+  [build-pipeline.yaml](/docs/solutions/build-pipeline.yaml) が実装例です。
+  
+  ```
+  $ oc apply -f docs/solutions/build-pipeline.yaml
+  ```
     
 </div>
 </details>
