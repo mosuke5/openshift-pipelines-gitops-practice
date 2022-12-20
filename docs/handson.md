@@ -1,8 +1,14 @@
 # ハンズオン
 ## 0. 確認した環境
-- OpenShift: 4.10
+- OpenShift: 4.10, 4.11
 - OpenShift Piplines: 1.8
 - OpenShift GitOps: 1.6
+
+```
+oc adm groups new handson-user
+oc adm groups add-users handson-user user0 user1 user2 user3 user4 user5 user6 user7 user8 user9 user10
+group.user.openshift.io/handson-user added: ["user0" "user1" "user2" "user3" "user4" "user5" "user6" "user7" "user8" "user9" "user10"]
+```
 
 ## 1. Argo CDの基礎
 Kubernetesを活用したアプリケーションデプロイを学ぶためにArgo CDを利用して、GitOpsの概念を理解します。
@@ -209,7 +215,7 @@ Workspace設定は、「ボリューム要求テンプレート」を選択し�
   - Image Streamにイメージが格納されていることを確認
 
 ### 4-5. (オプション)パイプラインの拡張
-
+[パイプラインの拡張](/docs/extend-pipeline.md)
 
 ### 4-6. Argo CDを用いたデプロイ
 Argo CDへアクセスし、[Argo CDハンズオンの内容](https://github.com/mamoru1112/openshift-gitops-handson)を思い出しながらデプロイ設定をしましょう。本演習で実施する流れは以下のとおりです。
