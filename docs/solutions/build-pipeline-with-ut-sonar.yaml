@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: extended-pipeline
+  name: build-pipeline-with-ut-sonar
 spec:
   workspaces: 
     - name: shared-workspace
@@ -10,23 +10,28 @@ spec:
   params:
     - name: git-url
       type: string
+      default: "https://github.com/mosuke5/openshift-pipelines-gitops-practice"
     - name: git-revision
       type: string
       default: "main"
     - name: image
       type: string
+      default: "image-registry.openshift-image-registry.svc:5000/<ns>/<image name>"
     - name: image-tag
       type: string
       default: "latest"
     - name: context
       type: string
       default: "."
-    - name: sonar-host-url
-      type: string
-      default: "http://sonarqube-sonarqube.handson-devops:9000"
     - name: python-version
       type: string
       default: "3.9"
+    - name: sonar-host-url
+      type: string
+      default: "http://sonarqube-sonarqube.handson-devops:9000"
+    - name: sonar-project-key
+      type: string
+      default: "userX-python-app"
   tasks:
     - name: fetch-repository
       taskRef:
@@ -59,6 +64,8 @@ spec:
       params:
         - name: SONAR_HOST_URL
           value: $(params.sonar-host-url)
+        - name: SONAR_PROJECT_KEY
+          value: $(params.sonar-project-key)
       workspaces:
         - name: source
           workspace: shared-workspace

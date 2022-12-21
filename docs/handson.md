@@ -1,8 +1,33 @@
 # ハンズオン
-## 0. 確認した環境
+## 0. 事前準備（ハンズオン管理者向け）
+### 環境
 - OpenShift: 4.10, 4.11
 - OpenShift Piplines: 1.8
 - OpenShift GitOps: 1.6
+
+### ユーザ
+`user1-N`という名前のユーザをハンズオン参加者向けに準備（Nは参加者人数）。
+
+### セットアップ
+以下のOperatorをインストールしています。
+
+- OpenShift Pipelines
+- OpenShift GitOps
+- OpenShift Dev Spaces (ハンズオン参加者のターミナル)
+
+「(オプション)パイプラインの拡張」を実践する場合は、Sonarqubeの起動も必要です。
+`handson-devops` プロジェクト内にSonarqubeが起動させます。
+SonarqubeのデフォルトID/PWは `admin/admin` です。ログインしてパスワードを変えておきましょう。
+
+```
+$ oc new-project handson-devops
+$ oc create sa postgresql
+$ oc adm policy add-scc-to-user anyuid -z postgresql
+
+$ helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
+$ helm repo update
+$ helm upgrade --install -f docs/solutions/sonarqube.yaml -n handson-devops sonarqube sonarqube/sonarqube
+```
 
 ## 1. Argo CDの基礎
 Kubernetesを活用したアプリケーションデプロイを学ぶためにArgo CDを利用して、GitOpsの概念を理解します。

@@ -8,6 +8,7 @@ spec:
   params:
     - name: git-url
       type: string
+      default: "https://github.com/mosuke5/openshift-pipelines-gitops-practice"
     - name: git-revision
       type: string
       default: "main"
