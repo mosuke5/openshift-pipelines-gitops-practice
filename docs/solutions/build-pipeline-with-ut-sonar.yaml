@@ -54,7 +54,7 @@ spec:
         - name: PYTHON
           value: $(params.python-version)
         - name: ARGS
-          value: "--cov=. --cov-report=xm"
+          value: "--cov=. --cov-report=xml"
       workspaces:
         - name: source
           workspace: shared-workspace
