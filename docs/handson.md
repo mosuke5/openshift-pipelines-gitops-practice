@@ -1,20 +1,15 @@
-# ハンズオン
+# CI/CD導入ハンズオン
 ## 0. 事前準備（ハンズオン管理者向け）
 ### 環境
 - OpenShift: 4.10, 4.11
 - OpenShift Piplines: 1.8
 - OpenShift GitOps: 1.6
+- OpenShift Dev Spaces (ハンズオン参加者のターミナル)
 
 ### ユーザ
 `user1`~`userN`のユーザをハンズオン参加者向けに準備（Nは参加者人数）。
 
 ### セットアップ
-以下のOperatorをインストールしています。
-
-- OpenShift Pipelines
-- OpenShift GitOps
-- OpenShift Dev Spaces (ハンズオン参加者のターミナル)
-
 「(オプション)パイプラインの拡張」を実践する場合は、Sonarqubeの起動も必要です。
 `handson-devops` プロジェクト内にSonarqubeが起動させます。
 SonarqubeのデフォルトID/PWは `admin/admin` です。ログインしてパスワードを変えておきましょう。
@@ -223,7 +218,7 @@ Argo CDの設定例。
 ### 4-7. Webhookの設定
 #### Tekton Triggers
 Tekton Pipelinesを用いたパイプラインの作成方法について説明しました。  
-続いて、Tekton Triggersについて説明します。Tekton Triggersは、Tekton Pipelinesと連携したコンポーネントであり、Webhook等の外部イベントをトリガーにしてパイプラインを実行するソフトウェアです。OpenShift Pipelinesは、このトリガー機能も含みます（OpenShift Pipelines 1.5では、Tekton Triggersはまだテクノロジープレビュー状態であることに注意してください）。Tekton Triggersに登場する主要な概念をテーブルにまとめました。
+続いて、Tekton Triggersについて説明します。Tekton Triggersは、Tekton Pipelinesと連携したコンポーネントであり、Webhook等の外部イベントをトリガーにしてパイプラインを実行するソフトウェアです。OpenShift Pipelinesは、このトリガー機能も含みます。Tekton Triggersに登場する主要な概念をテーブルにまとめました。
 
 | エンティティ | 説明 |
 ----|---- 
