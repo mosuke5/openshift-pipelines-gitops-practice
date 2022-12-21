@@ -1,0 +1,54 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-pipeline
+spec:
+  workspaces: 
+    - name: shared-workspace
+  params:
+    - name: git-url
+      type: string
+      default: "https://github.com/mosuke5/openshift-pipelines-gitops-practice"
+    - name: git-revision
+      type: string
+      default: "main"
+    - name: image
+      type: string
+      default: "image-registry.openshift-image-registry.svc:5000/<ns>/<image name>"
+    - name: image-tag
+      type: string
+      default: "latest"
+    - name: context
+      type: string
+      default: "."
+  tasks:
+    - name: fetch-repository
+      taskRef:
+        name: git-clone
+        kind: ClusterTask
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: deleteExisting
+          value: "true"
+        - name: revision
+          value: $(params.git-revision)
+    - name: build-push-image
+      taskRef:
+        name: buildah
+        kind: ClusterTask
+      params:
+        - name: IMAGE
+          value: $(params.image):$(params.image-tag)
+        - name: DOCKERFILE
+          value: "Dockerfile"
+        - name: CONTEXT
+          value: "$(workspaces.source.path)/$(params.context)"
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+      runAfter:
+        - fetch-repository

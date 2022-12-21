@@ -1,8 +1,33 @@
 # ハンズオン
-## 0. 確認した環境
-- OpenShift: 4.8
-- OpenShift Piplines: 1.5
-- OpenShift GitOps: 1.2
+## 0. 事前準備（ハンズオン管理者向け）
+### 環境
+- OpenShift: 4.10, 4.11
+- OpenShift Piplines: 1.8
+- OpenShift GitOps: 1.6
+
+### ユーザ
+`user1`~`userN`のユーザをハンズオン参加者向けに準備（Nは参加者人数）。
+
+### セットアップ
+以下のOperatorをインストールしています。
+
+- OpenShift Pipelines
+- OpenShift GitOps
+- OpenShift Dev Spaces (ハンズオン参加者のターミナル)
+
+「(オプション)パイプラインの拡張」を実践する場合は、Sonarqubeの起動も必要です。
+`handson-devops` プロジェクト内にSonarqubeが起動させます。
+SonarqubeのデフォルトID/PWは `admin/admin` です。ログインしてパスワードを変えておきましょう。
+
+```
+$ oc new-project handson-devops
+$ oc create sa postgresql
+$ oc adm policy add-scc-to-user anyuid -z postgresql
+
+$ helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
+$ helm repo update
+$ helm upgrade --install -f docs/solutions/sonarqube.yaml -n handson-devops sonarqube sonarqube/sonarqube
+```
 
 ## 1. Argo CDの基礎
 Kubernetesを活用したアプリケーションデプロイを学ぶためにArgo CDを利用して、GitOpsの概念を理解します。
@@ -80,6 +105,7 @@ spec:
       default: "main"
     - name: image
       type: string
+      default: "image-registry.openshift-image-registry.svc:5000/<ns>/<image name>"
     - name: image-tag
       type: string
       default: "latest"
@@ -121,61 +147,12 @@ spec:
 <details>
 <summary>ビルドパイプラインのソリューション</summary>
 <div>
-    
-```yaml
-apiVersion: tekton.dev/v1beta1
-kind: Pipeline
-metadata:
-  name: build-pipeline
-spec:
-  workspaces: 
-    - name: shared-workspace
-  params:
-    - name: git-url
-      type: string
-    - name: git-revision
-      type: string
-      default: "main"
-    - name: image
-      type: string
-    - name: image-tag
-      type: string
-      default: "latest"
-    - name: context
-      type: string
-      default: "."
-  tasks:
-    - name: fetch-repository
-      taskRef:
-        name: git-clone
-        kind: ClusterTask
-      workspaces:
-        - name: output
-          workspace: shared-workspace
-      params:
-        - name: url
-          value: $(params.git-url)
-        - name: deleteExisting
-          value: "true"
-        - name: revision
-          value: $(params.git-revision)
-    - name: build-push-image
-      taskRef:
-        name: buildah
-        kind: ClusterTask
-      params:
-        - name: IMAGE
-          value: $(params.image):$(params.image-tag)
-        - name: DOCKERFILE
-          value: "Dockerfile"
-        - name: CONTEXT
-          value: "$(workspaces.source.path)/$(params.context)"
-      workspaces:
-        - name: source
-          workspace: shared-workspace
-      runAfter:
-        - fetch-repository
-```
+
+  [build-pipeline.yaml](/docs/solutions/build-pipeline.yaml) が実装例です。
+  
+  ```
+  $ oc apply -f docs/solutions/build-pipeline.yaml
+  ```
     
 </div>
 </details>
@@ -208,7 +185,10 @@ Workspace設定は、「ボリューム要求テンプレート」を選択し�
 - 実行結果の確認
   - Image Streamにイメージが格納されていることを確認
 
-### 4-5. Argo CDを用いたデプロイ
+### 4-5. (オプション)パイプラインの拡張
+[パイプラインの拡張](/docs/extend-pipeline.md)
+
+### 4-6. Argo CDを用いたデプロイ
 Argo CDへアクセスし、[Argo CDハンズオンの内容](https://github.com/mamoru1112/openshift-gitops-handson)を思い出しながらデプロイ設定をしましょう。本演習で実施する流れは以下のとおりです。
 
 1. Argo CDへのログイン
@@ -240,7 +220,7 @@ Argo CDの設定例。
 - `userX-production`にアプリケーションをデプロイできること
 - `userX-staging`のみに変更を適用できること。そして、動作確認後、`userX-production`に変更を適用できること。
 
-### 4-6. Webhookの設定
+### 4-7. Webhookの設定
 #### Tekton Triggers
 Tekton Pipelinesを用いたパイプラインの作成方法について説明しました。  
 続いて、Tekton Triggersについて説明します。Tekton Triggersは、Tekton Pipelinesと連携したコンポーネントであり、Webhook等の外部イベントをトリガーにしてパイプラインを実行するソフトウェアです。OpenShift Pipelinesは、このトリガー機能も含みます（OpenShift Pipelines 1.5では、Tekton Triggersはまだテクノロジープレビュー状態であることに注意してください）。Tekton Triggersに登場する主要な概念をテーブルにまとめました。

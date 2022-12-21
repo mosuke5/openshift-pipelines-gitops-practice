@@ -1,5 +1,5 @@
 FROM redhat/ubi8:8.7
-RUN dnf install -y https://dev.mysql.com/get/mysql80-community-release-el8-3.noarch.rpm
+RUN rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm
 RUN dnf install -y python39 python3-devel mysql
 RUN mkdir /app
 WORKDIR /app
